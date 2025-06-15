@@ -1,0 +1,20 @@
+---
+
+galaxy_info:
+  author: Dorance Martinez
+  description: Provision local Linux users and SSH keys
+  role_name: users
+  company: dorancemc
+  license: Apache
+  min_ansible_version: "2.11"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+  galaxy_tags: []
+
+dependencies: []

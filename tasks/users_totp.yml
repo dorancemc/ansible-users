@@ -1,0 +1,44 @@
+---
+
+- name: Create ssh-totp group
+  become: true
+  ansible.builtin.group:
+    name: ssh-totp
+    system: true
+    state: present
+
+- name: Add users to ssh-totp group
+  become: true
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    groups: ssh-totp
+    append: yes
+  loop: "{{ users_totp }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when:
+    - item.token != ""
+
+- name: Add google_authenticator configuration file
+  become: true
+  ansible.builtin.template:
+    src: google_authenticator.j2
+    dest: "{{ users_default_homepath }}/{{ item.username }}/.google_authenticator"
+    owner: "{{ item.username }}"
+    mode: "0400"
+  loop: "{{ users_totp }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when:
+    - item.token != ""
+
+- name: Remove google_authenticator configuration file
+  become: true
+  ansible.builtin.file:
+    path: "{{ users_default_homepath }}/{{ item.username }}/.google_authenticator"
+    state: absent
+  loop: "{{ users_totp }}"
+  loop_control:
+    label: "{{ item.username }}"
+  when:
+    - item.token == ""

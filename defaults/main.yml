@@ -1,0 +1,35 @@
+---
+
+user_files_dir: "{{ playbook_dir }}/files/users"
+
+# Create a group for every user and make that their primary group
+users_create_per_user_group: true
+
+# If we're not creating a per-user group, then this is the group all users
+# belong to
+users_group: users
+users_append_groups: true
+
+# The default shell for a user if none is specified
+users_default_shell: /bin/bash
+
+# The default homepath for a user if none is specified
+users_default_homepath: /home
+
+# Delete home dirs for deleted users?
+users_delete_homedirs: true
+
+# Lists of users to create and delete
+users: []
+users_deleted: []
+
+users_groups_to_create: []
+
+users_totp: []
+  # - username: user.name
+  #   token: ABCDEFGHIJKLMNOPQRSTUVWXYZ234567
+  #   params: # https://github.com/google/google-authenticator-libpam/blob/master/FILEFORMAT
+  #     - RATE_LIMIT 3 30
+  #     - WINDOW_SIZE 17
+  #     - DISALLOW_REUSE
+  #     - TOTP_AUTH

@@ -1,0 +1,43 @@
+---
+
+- name: Deleted user removal
+  become: true
+  ansible.builtin.user:
+    name: "{{ item.username }}"
+    state: absent
+  loop_control:
+    label: "{{ item.username }}"
+  with_items: "{{ users_deleted }}"
+  when: item.hosts is not defined or inventory_hostname in item.hosts
+
+- name: Deleted per-user group removal
+  become: true
+  ansible.builtin.group:
+    name: "{{ item.username }}"
+    state: absent
+  loop_control:
+    label: "{{ item.username }}"
+  with_items: "{{ users_deleted }}"
+  when: users_create_per_user_group
+
+- name: Deleted user sudo configuration removal
+  become: true
+  ansible.builtin.file:
+    path: "/etc/sudoers.d/{{ item.username | replace('.', '') }}"
+    state: absent
+  loop_control:
+    label: "{{ item.username }}"
+  with_items: "{{ users_deleted }}"
+  when: item.hosts is not defined or inventory_hostname in item.hosts
+  ignore_errors: true
+
+- name: Deleted user homedir removal
+  become: true
+  ansible.builtin.file:
+    path: "{{ item.home | default(users_default_homepath + '/' + item.username) }}/"
+    state: absent
+  loop_control:
+    label: "{{ item.username }}"
+  with_items: "{{ users_deleted }}"
+  when: (item.force_homedir_removal is defined and item.force_homedir_removal == true) or users_delete_homedirs == true
+  ignore_errors: true

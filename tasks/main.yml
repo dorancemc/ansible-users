@@ -1,0 +1,19 @@
+---
+
+- name: Import users tasks
+  ansible.builtin.import_tasks: users.yml
+  tags:
+    - users
+    - users-only
+
+- name: Import users_totp tasks
+  ansible.builtin.import_tasks: users_totp.yml
+  tags:
+    - users
+    - users-totp
+
+- name: Import users_delete tasks
+  ansible.builtin.import_tasks: users_delete.yml
+  tags:
+    - users
+    - users-delete

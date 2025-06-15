@@ -1,0 +1,15 @@
+---
+
+- name: Creating groups
+  become: true
+  ansible.builtin.group:
+    name: "{{ item }}"
+  loop: "{{ users_groups_to_create }}"
+
+- name: Creating users
+  ansible.builtin.include_tasks: user.yml
+  loop: "{{ users }}"
+  loop_control:
+    loop_var: _user
+    label: "{{ _user.username }}"
+  when: _user.hosts is not defined or inventory_hostname in _user.hosts

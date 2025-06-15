@@ -1,0 +1,83 @@
+---
+
+- name: Group creation {{ _user.username }}
+  become: true
+  ansible.builtin.group:
+    name: "{{ _user.username }}"
+    gid: "{{ _user.uid }}"
+  when: users_create_per_user_group
+
+- name: User creation {{ _user.username }}
+  become: true
+  ansible.builtin.user:
+    name: "{{ _user.username }}"
+    append: "{{ users_append_groups }}"
+    group: "{{ _user.username if users_create_per_user_group else users_group }}"
+    groups: "{{ _user.groups | default() | join(',') }}"
+    shell: "{{ _user.shell | default(users_default_shell) }}"
+    password: "{{ _user.password | default(omit) }}"
+    comment: "{{ _user.comment | default(_user.username) }}"
+    uid: "{{ _user.uid|default(omit) }}"
+    createhome: "{{ _user.createhome | default(true) }}"
+    update_password: always
+    home: "{{ _user.home | default(users_default_homepath + '/' + _user.username) }}"
+
+- name: Add keys to authorized_keys {{ _user.username }}
+  become: true
+  ansible.posix.authorized_key:
+    user: "{{ _user.username }}"
+    key: "{{ _user.ssh_key | join('\n') }}"
+    exclusive: true
+  when:
+    _user.ssh_key is defined
+
+- name: Create directory .ssh if not existing
+  become: true
+  ansible.builtin.file:
+    path: "{{ _user.home + '/.ssh' if _user.home is defined else users_default_homepath + '/' + _user.username + '/.ssh' }}"
+    state: directory
+    owner: "{{ _user.username }}"
+    group: "{{ _user.username if users_create_per_user_group else users_group }}"
+    mode: 0700
+  when: _user.keyfiles is defined or _user.ssh_config is defined
+
+- name: Copy SSH key files
+  become: true
+  ansible.builtin.copy:
+    src: "{{ user_files_dir }}/ssh-keys/{{ item.src }}"
+    dest: "{{ _user.home + '/.ssh/' if _user.home is defined else users_default_homepath + '/' + _user.username + '/.ssh/' + item.dst }}"
+    owner: "{{ _user.username }}"
+    group: "{{ _user.username if users_create_per_user_group else users_group }}"
+    mode: 0600
+  loop:
+    - "{{ _user.keyfiles }}"
+  when: _user.keyfiles is defined
+
+- name: Copy SSH configuration
+  become: true
+  ansible.builtin.copy:
+    src: "{{ user_files_dir }}/ssh_config/{{ _user.ssh_config[0] }}"
+    dest: "{{ _user.home + '/.ssh/config' if _user.home is defined else users_default_homepath + '/' + _user.username + '/.ssh/config' }}"
+    owner: "{{ _user.username }}"
+    group: "{{ _user.username if users_create_per_user_group else users_group }}"
+    mode: 0600
+  when:
+    _user.ssh_config is defined
+
+- name: Allow user to sudo without password
+  become: true
+  ansible.builtin.template:
+    src: sudoers.d.tpl.j2
+    dest: "/etc/sudoers.d/{{ _user.username | replace('.', '') }}"
+    mode: 0640
+  when:
+    - _user.allow_sudonopass is defined
+    - _user.allow_sudonopass
+
+- name: Disallow user to sudo without password
+  become: true
+  ansible.builtin.file:
+    path: "/etc/sudoers.d/{{ _user.username | replace('.', '') }}"
+    state: absent
+  when:
+    - (_user.allow_sudonopass is not defined or _user.allow_sudonopass == false )
