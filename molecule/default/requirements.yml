@@ -1,5 +1,5 @@
 ---
 # This file is intentionally empty as we're testing a local role
-# If you need to add dependencies in the future, add them here 
+# If you need to add dependencies in the future, add them here
 roles: []
 collections: []
