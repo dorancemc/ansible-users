@@ -4,6 +4,7 @@ galaxy_info:
   author: Dorance Martinez
   description: Provision local Linux users and SSH keys
   role_name: users
+  namespace: dorancemc
   company: dorancemc
   license: Apache
   min_ansible_version: "2.11"

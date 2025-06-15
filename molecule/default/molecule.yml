@@ -1,6 +1,9 @@
 ---
 dependency:
   name: galaxy
+  options:
+    requirements-file: null
+    role-file: null
 driver:
   name: docker
 platforms:
