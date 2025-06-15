@@ -3,13 +3,10 @@
   hosts: all
   become: true
   tasks:
-    - name: Install required packages
-      package:
-        name:
-          - python3
-          - python3-pip
-        state: present
-      when: ansible_os_family in ['Debian', 'Ubuntu']
+    - name: Install Python3
+      raw: apt-get update && apt-get install -y python3 python3-pip
+      args:
+        executable: /bin/bash
 
     - name: Create test user
       user:
