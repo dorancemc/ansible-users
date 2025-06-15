@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  become: true
+  tasks:
+    - name: Verify users role
+      ansible.builtin.include_role:
+        name: users
+      register: role_output
+      check_mode: true
+
+    - name: Assert idempotency
+      ansible.builtin.assert:
+        that: role_output.changed == false
+        fail_msg: "Role is not idempotent" 

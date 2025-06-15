@@ -1,0 +1,22 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+platforms:
+  - name: debian12
+    image: debian:bookworm-slim
+    pre_build_image: true
+  - name: ubuntu2204
+    image: ubuntu:22.04
+    pre_build_image: true
+  - name: ubuntu2404
+    image: ubuntu:24.04
+    pre_build_image: true
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+verifier:
+  name: ansible 
