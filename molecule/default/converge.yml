@@ -5,4 +5,4 @@
   tasks:
     - name: Include users role
       ansible.builtin.include_role:
-        name: users 
+        name: users

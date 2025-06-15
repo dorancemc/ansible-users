@@ -12,4 +12,4 @@
     - name: Assert idempotency
       ansible.builtin.assert:
         that: role_output.changed == false
-        fail_msg: "Role is not idempotent" 
+        fail_msg: "Role is not idempotent"

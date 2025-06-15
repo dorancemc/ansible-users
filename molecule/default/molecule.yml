@@ -19,4 +19,4 @@ provisioner:
     defaults:
       interpreter_python: auto_silent
 verifier:
-  name: ansible 
+  name: ansible
