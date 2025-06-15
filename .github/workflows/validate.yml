@@ -1,3 +1,4 @@
+---
 name: Validate Ansible Role
 
 on:
@@ -33,4 +34,4 @@ jobs:
 
       - name: Run ansible-playbook syntax check
         run: |
-          cd tests && ansible-playbook -i inventory --syntax-check test.yml 
+          cd tests && ansible-playbook -i inventory --syntax-check test.yml
