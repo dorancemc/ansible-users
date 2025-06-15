@@ -21,5 +21,12 @@ provisioner:
   config_options:
     defaults:
       interpreter_python: auto_silent
+  inventory:
+    group_vars:
+      all:
+        ansible_user: testuser
+        ansible_become: true
+        ansible_become_method: sudo
+        ansible_become_user: root
 verifier:
   name: ansible
