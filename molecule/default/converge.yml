@@ -2,6 +2,10 @@
 - name: Converge
   hosts: all
   become: true
+  become_user: root
+  become_method: sudo
+  vars:
+    ansible_user: testuser
   tasks:
     - name: Include users role
       ansible.builtin.include_role:
