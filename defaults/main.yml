@@ -31,6 +31,9 @@ users: []
   #   keyfiles:
   #     - src: ansible_example_sshkey
   #       dst: id_ed25519
+  #   host_keys:
+  #     - gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
+  #     - github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJ
   #   hosts:
   #     - semaphore
 users_deleted: []

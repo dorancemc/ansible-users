@@ -64,6 +64,20 @@
   when:
     _user.ssh_config is defined
 
+- name: Add SSH host keys to known_hosts
+  become: true
+  become_user: "{{ _user.username }}"
+  ansible.builtin.known_hosts:
+    name: "{{ host_key.split(' ')[0] }}"
+    key: "{{ host_key }}"
+    state: present
+  loop: "{{ _user.host_keys }}"
+  loop_control:
+    loop_var: host_key
+    label: "{{ _user.username }}:{{ host_key.split(' ')[0] }}"
+  when: 
+    - _user.host_keys is defined
+
 - name: Allow user to sudo without password
   become: true
   ansible.builtin.template:
