@@ -75,7 +75,7 @@
   loop_control:
     loop_var: host_key
     label: "{{ _user.username }}:{{ host_key.split(' ')[0] }}"
-  when: 
+  when:
     - _user.host_keys is defined
 
 - name: Allow user to sudo without password
