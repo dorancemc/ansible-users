@@ -1,6 +1,6 @@
 ---
 
-user_files_dir: "{{ playbook_dir }}/files/users"
+users_files_dir: "{{ playbook_dir }}/files/users"
 
 # Create a group for every user and make that their primary group
 users_create_per_user_group: true
@@ -21,6 +21,18 @@ users_delete_homedirs: true
 
 # Lists of users to create and delete
 users: []
+  # - username: example
+  #   name: Example User
+  #   allow_sudonopass: true
+  #   ssh_key:
+  #     - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456"
+  # - username: ansible
+  #   name: Ansible User
+  #   keyfiles:
+  #     - src: ansible_example_sshkey
+  #       dst: id_ed25519
+  #   hosts:
+  #     - semaphore
 users_deleted: []
 
 users_groups_to_create: []

@@ -4,7 +4,7 @@
   become: true
   ansible.builtin.group:
     name: "{{ _user.username }}"
-    gid: "{{ _user.uid }}"
+    uid: "{{ _user.uid|default(omit) }}"
   when: users_create_per_user_group
 
 - name: User creation {{ _user.username }}
@@ -44,19 +44,19 @@
 - name: Copy SSH key files
   become: true
   ansible.builtin.copy:
-    src: "{{ user_files_dir }}/ssh-keys/{{ item.src }}"
+    src: "{{ users_files_dir }}/ssh-keys/{{ item.src }}"
     dest: "{{ _user.home + '/.ssh/' if _user.home is defined else users_default_homepath + '/' + _user.username + '/.ssh/' + item.dst }}"
     owner: "{{ _user.username }}"
     group: "{{ _user.username if users_create_per_user_group else users_group }}"
     mode: 0600
-  loop:
-    - "{{ _user.keyfiles }}"
+  loop: "{{ _user.keyfiles }}"
+  no_log: true
   when: _user.keyfiles is defined
 
 - name: Copy SSH configuration
   become: true
   ansible.builtin.copy:
-    src: "{{ user_files_dir }}/ssh_config/{{ _user.ssh_config[0] }}"
+    src: "{{ users_files_dir }}/ssh_config/{{ _user.ssh_config[0] }}"
     dest: "{{ _user.home + '/.ssh/config' if _user.home is defined else users_default_homepath + '/' + _user.username + '/.ssh/config' }}"
     owner: "{{ _user.username }}"
     group: "{{ _user.username if users_create_per_user_group else users_group }}"
